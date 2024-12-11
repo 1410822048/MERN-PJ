@@ -1,0 +1,62 @@
+/* 定義進場動畫 */
+@keyframes toastAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px); /* 初始位置稍微偏上 */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* 完全顯示，恢復原始位置 */
+  }
+}
+
+/* 應用動畫到 Toast */
+.toast-custom {
+  animation: toastAnimation 1s ease-out; /* 動畫持續 1 秒，並設置為平滑過渡 */
+}
+
+/* 刪除課程按鈕 */
+.card .delete-btn {
+  background-color: #f1b27a !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 25px !important;
+  padding: 0.5rem 1.5rem !important;
+  position: absolute !important;
+  bottom: 1rem !important;
+  left: 1rem !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.card .delete-btn:hover {
+  background-color: #c47f46 !important;
+}
+
+/* 編輯課程按鈕 */
+.card .edit-btn {
+  background-color: #f1b27a !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 25px !important;
+  padding: 0.5rem 1.5rem !important;
+  position: absolute !important;
+  bottom: 1rem !important;
+  right: 1rem !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.card .edit-btn:hover {
+  background-color: #c47f46 !important;
+}
+
+.save-btn:hover {
+  background-color: #c47f46 !important;
+}
+
+.cancel-btn:hover {
+  background-color: #8f8f8f !important;
+}
