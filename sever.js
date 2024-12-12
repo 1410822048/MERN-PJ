@@ -6,12 +6,18 @@ const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
 const passport = require("passport");
 const cors = require("cors");
+const path = require("path");
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
 dotenv.config();
 require("./config/passport")(passport);
 
 mongoose
   //基本mongoose 連接 mongoDB的寫法
-  .connect("mongodb://127.0.0.1/MernDB")
+  .connect(MONGO_URI, {
+    PuseNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("Connecting to MernDB");
   })
@@ -22,6 +28,7 @@ mongoose
 app.use(express.json()); //express 必須
 app.use(express.urlencoded({ extended: true })); //express post 解碼必須
 app.use(cors());
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 app.use("/api/user", authRoute);
 
@@ -32,6 +39,15 @@ app.use(
   courseRoute //如通過認證 才會進到這個Routes裡面
 );
 
-app.listen(8080, () => {
+// if (
+//   process.env.NODE_ENV === "production" ||
+//   process.env.NODE_ENV === "staging"
+// ) {
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+// });
+// }
+
+app.listen(PORT, () => {
   console.log("正在運行在8080");
 });
