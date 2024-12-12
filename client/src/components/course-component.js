@@ -191,7 +191,7 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
 
   useEffect(() => {
     fetchCourses();
-  }, [currentUser]);
+  }, []);
 
   return (
     <div

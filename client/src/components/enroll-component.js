@@ -249,8 +249,7 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
                 </p>
 
                 {/* 註冊課程按鈕固定在右下角 */}
-                <a
-                  href="#"
+                <button
                   onClick={handleEnroll}
                   className="btn btn-primary"
                   id={course._id}
@@ -267,7 +266,7 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
                   }}
                 >
                   註冊課程
-                </a>
+                </button>
 
                 {/* Toast Container for center positioning */}
                 <ToastContainer
