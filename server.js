@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv").config();
 const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
 const passport = require("passport");
@@ -9,7 +9,6 @@ const cors = require("cors");
 const path = require("path");
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
-dotenv.config();
 require("./config/passport")(passport);
 
 mongoose
