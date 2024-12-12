@@ -43,9 +43,9 @@ app.use(
 //   process.env.NODE_ENV === "production" ||
 //   process.env.NODE_ENV === "staging"
 // ) {
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 // }
 
 app.listen(PORT, () => {
