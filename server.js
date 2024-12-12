@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
 const passport = require("passport");
@@ -13,10 +13,7 @@ require("./config/passport")(passport);
 
 mongoose
   //基本mongoose 連接 mongoDB的寫法
-  .connect(MONGO_URI, {
-    PuseNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(MONGO_URI)
   .then(() => {
     console.log("Connecting to MernDB");
   })
