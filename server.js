@@ -1,4 +1,5 @@
 // const express = require("express");
+const path = require("path");
 const express = require(path.join(__dirname, "node_modules", "express"));
 const app = express();
 const mongoose = require("mongoose");
@@ -7,7 +8,6 @@ const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
 const passport = require("passport");
 const cors = require("cors");
-const path = require("path");
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 require("./config/passport")(passport);
