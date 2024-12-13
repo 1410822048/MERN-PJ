@@ -13,9 +13,9 @@ const HomeComponent = (currentUser, setCurrentUser) => {
     const user = AuthService.getCurrentUser();
     if (!user) {
       navigate("/register", { state: { Inrole: "Instructor" } });
-    } else if (currentUser && user.user.role === "Instructor") {
+    } else if (user.user.role === "Instructor") {
       navigate("/postCourse");
-    } else if (currentUser && user.user.role === "Student") {
+    } else if (user.user.role === "Student") {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
   };
