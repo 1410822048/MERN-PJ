@@ -7,22 +7,19 @@ const HomeComponent = (currentUser, setCurrentUser) => {
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
-    if (user) {
-      setCurrentUser(user);
-    }
-  }, [setCurrentUser]);
+    setCurrentUser(user);
+  }, []);
 
   const handleRegisterRedirect = () => {
     navigate("/register");
   };
 
   const handleInstructorRedirect = () => {
-    console.log(currentUser);
-    if (currentUser && currentUser.user.role === "Instructor") {
+    if (!currentUser) {
+      navigate("/register", { state: { Inrole: "Instructor" } });
+    } else if (currentUser && currentUser.user.role === "Instructor") {
       navigate("/postCourse");
     } else if (currentUser && currentUser.user.role === "Student") {
-      navigate("/register", { state: { Inrole: "Instructor" } });
-    } else {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
   };
