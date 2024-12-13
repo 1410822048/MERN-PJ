@@ -12,13 +12,13 @@ const HomeComponent = (currentUser, setCurrentUser) => {
   const handleInstructorRedirect = () => {
     const user = AuthService.getCurrentUser();
     // 假設你可以從 currentUser 獲得當前用戶
-    if (!user.user.role) {
-      navigate("/register", { state: { Inrole: "Instructor" } });
-    } else if (currentUser && user.user.role === "Instructor") {
+
+    if (currentUser && user.user.role === "Instructor") {
       navigate("/postCourse");
     } else if (currentUser && user.user.role === "Student") {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
+    navigate("/register", { state: { Inrole: "Instructor" } });
   };
   return (
     <main style={{ backgroundColor: "#f4f7fb", minHeight: "100vh" }}>
