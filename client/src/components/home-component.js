@@ -10,12 +10,12 @@ const HomeComponent = (currentUser, setCurrentUser) => {
   };
 
   const handleInstructorRedirect = () => {
-    const user = AuthService.getCurrentUser();
+    AuthService.getCurrentUser();
     // 假設你可以從 currentUser 獲得當前用戶
 
-    if (currentUser && user.user.role === "Instructor") {
+    if (currentUser && currentUser.user.role === "Instructor") {
       navigate("/postCourse");
-    } else if (currentUser && user.user.role === "Student") {
+    } else if (currentUser && currentUser.user.role === "Student") {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
     navigate("/register", { state: { Inrole: "Instructor" } });
