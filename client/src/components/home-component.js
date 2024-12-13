@@ -1,24 +1,29 @@
-import React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 
 const HomeComponent = (currentUser, setCurrentUser) => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, [setCurrentUser]);
+
   const handleRegisterRedirect = () => {
     navigate("/register");
   };
 
   const handleInstructorRedirect = () => {
-    AuthService.getCurrentUser();
-    // 假設你可以從 currentUser 獲得當前用戶
-
     if (currentUser && currentUser.user.role === "Instructor") {
       navigate("/postCourse");
     } else if (currentUser && currentUser.user.role === "Student") {
       navigate("/register", { state: { Inrole: "Instructor" } });
+    } else {
+      navigate("/register", { state: { Inrole: "Instructor" } });
     }
-    navigate("/register", { state: { Inrole: "Instructor" } });
   };
   return (
     <main style={{ backgroundColor: "#f4f7fb", minHeight: "100vh" }}>
