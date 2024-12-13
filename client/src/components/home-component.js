@@ -10,12 +10,13 @@ const HomeComponent = (currentUser, setCurrentUser) => {
   };
 
   const handleInstructorRedirect = () => {
-    setCurrentUser(AuthService.getCurrentUser());
-    if (!currentUser) {
+    const user = AuthService.getCurrentUser();
+    console.log(user);
+    if (!user) {
       navigate("/register", { state: { Inrole: "Instructor" } });
-    } else if (currentUser && currentUser.user.role === "Instructor") {
+    } else if (currentUser && user.user.role === "Instructor") {
       navigate("/postCourse");
-    } else if (currentUser && currentUser.user.role === "Student") {
+    } else if (currentUser && user.user.role === "Student") {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
   };
