@@ -10,7 +10,7 @@ const HomeComponent = (currentUser, setCurrentUser) => {
   };
 
   const handleInstructorRedirect = () => {
-    AuthService.getCurrentUser();
+    setCurrentUser(AuthService.getCurrentUser());
     if (!currentUser) {
       navigate("/register", { state: { Inrole: "Instructor" } });
     } else if (currentUser && currentUser.user.role === "Instructor") {
