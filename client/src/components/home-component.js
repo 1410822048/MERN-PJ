@@ -17,7 +17,7 @@ const HomeComponent = (currentUser, setCurrentUser) => {
     } else if (currentUser && user.user.role === "Student") {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
-    if (!currentUser) {
+    if (!currentUser && !user.user.role) {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
   };
