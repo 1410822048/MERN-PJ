@@ -77,6 +77,15 @@ const PostCourseComponent = ({ currentUser, setCurrentUser }) => {
         </div>
       )}
 
+      {message && (
+        <div
+          className="alert alert-warning"
+          role="alert"
+          style={{ marginTop: "20px" }}
+        >
+          {message}
+        </div>
+      )}
       {currentUser && currentUser.user.role === "Instructor" && (
         <div className="form-group">
           <label htmlFor="exampleforTitle" style={{ fontSize: "18px" }}>
@@ -199,16 +208,6 @@ const PostCourseComponent = ({ currentUser, setCurrentUser }) => {
               </Toast.Body>
             </Toast>
           </ToastContainer>
-
-          {message && (
-            <div
-              className="alert alert-warning"
-              role="alert"
-              style={{ marginTop: "20px" }}
-            >
-              {message}
-            </div>
-          )}
         </div>
       )}
     </div>
