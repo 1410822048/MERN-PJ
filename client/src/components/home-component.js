@@ -1,20 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 
 const HomeComponent = (currentUser, setCurrentUser) => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const user = AuthService.getCurrentUser();
-    setCurrentUser(user);
-  }, []);
-
   const handleRegisterRedirect = () => {
     navigate("/register");
   };
 
   const handleInstructorRedirect = () => {
+    AuthService.getCurrentUser();
     if (!currentUser) {
       navigate("/register", { state: { Inrole: "Instructor" } });
     } else if (currentUser && currentUser.user.role === "Instructor") {
