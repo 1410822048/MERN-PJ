@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 
@@ -17,6 +17,7 @@ const HomeComponent = (currentUser, setCurrentUser) => {
   };
 
   const handleInstructorRedirect = () => {
+    console.log(currentUser);
     if (currentUser && currentUser.user.role === "Instructor") {
       navigate("/postCourse");
     } else if (currentUser && currentUser.user.role === "Student") {
