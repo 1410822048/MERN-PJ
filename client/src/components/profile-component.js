@@ -32,7 +32,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
       return;
     }
 
-    let _id = currentUser.user.id; // 获取当前用户 ID
+    let _id = currentUser.user._id; // 获取当前用户 ID
     const updatedData = {};
 
     // 只在数据有更改时更新
@@ -343,7 +343,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                     <td>
                       <strong>用户ID：</strong>
                     </td>
-                    <td>{currentUser?.user?.id}</td>
+                    <td>{currentUser?.user?._id}</td>
                   </tr>
                   <tr>
                     <td>
