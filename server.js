@@ -14,8 +14,6 @@ require("./config/passport")(passport);
 mongoose
   //基本mongoose 連接 mongoDB的寫法
   .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     maxPoolSize: 10,
   })
   .then(() => {

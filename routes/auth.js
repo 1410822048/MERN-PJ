@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email }).select("email password").exec();
+    const user = await User.findOne({ email }).exec();
 
     if (!user) {
       return handleError(res, 400, "找不到此用戶，請確認信箱是否正確。");
