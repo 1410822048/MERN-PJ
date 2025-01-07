@@ -23,13 +23,11 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
       localStorage.setItem("user", JSON.stringify(response.data));
       setShowToast(true);
     } catch (e) {
-      console.log(e.response);
-
-      if (e.response.data.includes("信箱")) {
-        setEmailError(e.response.data); // 設定電子信箱錯誤訊息
+      if (e.response.data.error.includes("信箱")) {
+        setEmailError(e.response.data.error); // 設定電子信箱錯誤訊息
       }
-      if (e.response.data.includes("密碼")) {
-        setPasswordError(e.response.data); // 設定密碼錯誤訊息
+      if (e.response.data.error.includes("密碼")) {
+        setPasswordError(e.response.data.error); // 設定密碼錯誤訊息
       }
     }
   };

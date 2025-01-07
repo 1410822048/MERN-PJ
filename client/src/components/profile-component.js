@@ -115,7 +115,6 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
           });
         }
       } catch (e) {
-        // console.log(e.response);
         if (e.response.data.error.includes("用戶")) {
           setUserNameError(e.response.data.error);
         }

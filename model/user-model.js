@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
-const saltRounds = 14;
+const saltRounds = 8;
 
 const userSchema = new Schema({
   username: {
@@ -47,13 +47,12 @@ userSchema.methods.isInstructor = function () {
   return this.role == "Instructor";
 };
 
-userSchema.methods.comparePassword = async function (password, cb) {
-  let result;
+userSchema.methods.comparePassword = async function (password) {
   try {
-    result = await bcrypt.compare(password, this.password);
-    return cb(null, result);
+    const result = await bcrypt.compare(password, this.password);
+    return result;
   } catch (e) {
-    return cb(e, result);
+    throw e;
   }
 };
 

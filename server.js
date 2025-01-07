@@ -13,13 +13,27 @@ require("./config/passport")(passport);
 
 mongoose
   //基本mongoose 連接 mongoDB的寫法
-  .connect(MONGO_URI)
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 10,
+  })
   .then(() => {
     console.log("Connecting to MernDB");
   })
   .catch((e) => {
     console.log(e);
   });
+
+// mongoose
+//   //基本mongoose 連接 mongoDB的寫法
+//   .connect("mongodb://127.0.0.1:27017/MernDB")
+//   .then(() => {
+//     console.log("Connecting to MernDB");
+//   })
+//   .catch((e) => {
+//     console.log(e);
+//   });
 
 app.use(express.json()); //express 必須
 app.use(express.urlencoded({ extended: true })); //express post 解碼必須

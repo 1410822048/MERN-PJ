@@ -37,7 +37,7 @@ const RegisterComponent = () => {
       await AuthService.register(username, email, password, role);
       setShowToast(true); // 註冊成功後顯示Toast
     } catch (e) {
-      setMsg(e.response.data);
+      setMsg(e.response.data.error);
     }
   };
 
