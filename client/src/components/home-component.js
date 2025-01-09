@@ -73,6 +73,13 @@ const HomeComponent = () => {
                 }}
                 onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
                 onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+                onClick={() => {
+                  const platformFeatures =
+                    document.getElementById("platform-features");
+                  if (platformFeatures) {
+                    platformFeatures.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
               >
                 立即體驗
               </button>
@@ -81,7 +88,17 @@ const HomeComponent = () => {
         </div>
 
         {/* 平台特色區塊 */}
-        <div className="row mt-5 g-4">
+        <div
+          id="platform-features"
+          className="row mt-5 g-4"
+          style={{
+            position: "relative",
+            zIndex: 2,
+            backgroundColor: "#f8f9fa",
+            paddingTop: "2rem",
+            marginTop: "-2rem",
+          }}
+        >
           <div className="col-md-4">
             <div
               className="h-100 p-4 text-center rounded-3 shadow-sm"
