@@ -15,8 +15,80 @@
   animation: toastAnimation 1s ease-out; /* 動畫持續 1 秒，並設置為平滑過渡 */
 }
 
-/* 刪除課程按鈕 */
-.card .delete-btn {
+/* 卡片整體樣式 */
+.card {
+  width: 20rem;
+  background-color: #fff;
+  border: 1px solid #e3d9c6;
+  border-radius: 1.5rem !important;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card .card-body {
+  padding: 1rem;
+}
+
+.card .card-body .card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d89e67;
+  margin-bottom: 1rem;
+}
+
+/* 課程描述 */
+.card-text {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #4a4a4a;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  text-align: justify;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.card-info {
+  margin-bottom: 2.5rem;
+}
+
+/* 刪除按鈕 */
+.delete-btn {
+  background-color: #dc3545 !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  top: 0.5rem !important;
+  right: 0.5rem !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  font-size: 1rem !important;
+  padding: 0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  z-index: 1;
+}
+
+.delete-btn:hover {
+  background-color: #c82333 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 編輯按鈕 */
+.edit-btn {
   background-color: #f1b27a !important;
   border: none !important;
   color: white !important;
@@ -25,18 +97,18 @@
   padding: 0.5rem 1.5rem !important;
   position: absolute !important;
   bottom: 1rem !important;
-  left: 1rem !important;
+  left: 1.8rem !important;
   transition: all 0.3s ease !important;
   cursor: pointer !important;
 }
 
-.card .delete-btn:hover {
+.edit-btn:hover {
   background-color: #c47f46 !important;
 }
 
-/* 編輯課程按鈕 */
-.card .edit-btn {
-  background-color: #f1b27a !important;
+/* 詳情按鈕 */
+.detail-btn {
+  background-color: #6a6a6a !important;
   border: none !important;
   color: white !important;
   font-weight: bold !important;
@@ -44,19 +116,78 @@
   padding: 0.5rem 1.5rem !important;
   position: absolute !important;
   bottom: 1rem !important;
-  right: 1rem !important;
+  right: 1.8rem !important;
   transition: all 0.3s ease !important;
   cursor: pointer !important;
 }
 
-.card .edit-btn:hover {
-  background-color: #c47f46 !important;
+.detail-btn:hover {
+  background-color: #3a3a3a !important;
+}
+
+/* 保存按鈕 */
+.save-btn {
+  background-color: #f1b27a !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 25px !important;
+  padding: 0.5rem 1.5rem !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
 }
 
 .save-btn:hover {
   background-color: #c47f46 !important;
 }
 
-.cancel-btn:hover {
+/* 取消按鈕 */
+.cancel-btn {
   background-color: #8f8f8f !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 25px !important;
+  padding: 0.5rem 1.5rem !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.cancel-btn:hover {
+  background-color: #6c6c6c !important;
+}
+
+.card .btn-primary {
+  background-color: #f6c89f;
+  border-color: #f6c89f;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+  position: absolute;
+  bottom: 1rem;
+  right: 1.8rem;
+}
+
+.card .btn-primary:hover {
+  background-color: #dcb291;
+  border-color: #f6c89f;
+}
+
+.card .btn-detail {
+  background-color: #6a6a6a;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+  position: absolute;
+  bottom: 1rem;
+  left: 1.8rem;
+  cursor: pointer;
+}
+
+.card .btn-detail:hover {
+  background-color: #6d6d6c;
+  border-color: #f6c89f;
 }

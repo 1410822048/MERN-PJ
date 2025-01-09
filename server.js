@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
+const publicRoute = require("./routes").public;
 const passport = require("passport");
 const cors = require("cors");
 const PORT = process.env.PORT || 10000;
@@ -39,6 +40,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "client", "build")));
 
 app.use("/api/user", authRoute);
+app.use("/api/public", publicRoute);
 
 // 需經過jwt保護，如未有token 則req 就會被視為沒有被授權
 app.use(
@@ -59,3 +61,7 @@ if (
 app.listen(PORT, () => {
   console.log("正在運行在8080");
 });
+
+// app.listen(8080, () => {
+//   console.log("正在運行在8080");
+// });

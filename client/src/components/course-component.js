@@ -1,32 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseService from "../services/course.service";
 import { Toast, ToastContainer } from "react-bootstrap";
 import "../styles/style.css";
 
-const CourseComponent = ({ currentUser, setCurrentUser }) => {
-  const Navigate = useNavigate();
-  let [msg, setMsg] = useState("");
-  const [courseData, setCourseData] = useState(null);
-  const [showToast, setShowToast] = useState(false);
-  const [editMode, setEditMode] = useState(false); // 是否進入編輯模式
-  const [editCourse, setEditCourse] = useState({
-    _id: "",
-    title: "",
-    description: "",
-    price: "",
-  }); //要更改的東西 _id只是當個媒介導入而已
-  const [messageType, setMessageType] = useState(""); // success, error, info
-
-  const labelStyle = {
+// 樣式物件
+const styles = {
+  label: {
     display: "block",
     fontSize: "1.1rem",
     fontWeight: "bold",
     marginBottom: "0.5rem",
     color: "#4A4A4A",
-  };
-
-  const inputStyle = {
+  },
+  input: {
     width: "100%",
     padding: "0.8rem",
     fontSize: "1rem",
@@ -35,15 +22,20 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
     outline: "none",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     fontFamily: "'Noto Sans JP', sans-serif",
-  };
-
-  const textareaStyle = {
-    ...inputStyle,
+  },
+  textarea: {
+    width: "100%",
+    padding: "0.8rem",
+    fontSize: "1rem",
+    borderRadius: "8px",
+    border: "1px solid #E3D9C6",
+    outline: "none",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    fontFamily: "'Noto Sans JP', sans-serif",
     resize: "none",
     lineHeight: "1.6",
-  };
-
-  const buttonStyle = {
+  },
+  button: {
     backgroundColor: "#F6C89F",
     color: "#FFF",
     fontWeight: "bold",
@@ -53,49 +45,51 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
     fontSize: "1rem",
     cursor: "pointer",
     transition: "all 0.3s ease",
-  };
+  },
+};
 
-  const fetchCourses = () => {
-    if (currentUser) {
-      const _id = currentUser.user._id;
-      const coursePromise =
-        currentUser.user.role === "Instructor"
-          ? CourseService.get(_id) // 講師的課程
-          : CourseService.getEnrollCourse(_id); // 學生的註冊課程
+// 初始狀態
+const initialState = {
+  editMode: false,
+  editCourse: {
+    _id: "",
+    title: "",
+    description: "",
+    price: "",
+  },
+  showToast: false,
+  messageType: "",
+};
 
-      coursePromise
-        .then((res) => {
-          setCourseData(res.data); // 設定課程資料
-        })
-        .catch((error) => {
-          console.error("獲取課程失敗:", error);
-        });
-    }
-  };
+// Reducer 函數
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_EDIT_MODE":
+      return { ...state, editMode: action.payload };
+    case "SET_EDIT_COURSE":
+      return { ...state, editCourse: action.payload };
+    case "SHOW_TOAST":
+      return { ...state, showToast: true, messageType: action.payload };
+    case "HIDE_TOAST":
+      return { ...state, showToast: false };
+    default:
+      return state;
+  }
+}
 
+// Toast 元件
+const CustomToast = ({ show, onClose, messageType }) => {
   const getToastStyle = () => {
     switch (messageType) {
       case "error":
-        return {
-          backgroundColor: "#dc3545", // 紅色背景
-          color: "#f8f9fa", // 白色文字
-        };
+        return { backgroundColor: "#dc3545", color: "#f8f9fa" };
       case "info":
-        return {
-          backgroundColor: "#17a2b8", // 藍色背景
-          color: "#f8f9fa", // 白色文字
-        };
+        return { backgroundColor: "#17a2b8", color: "#f8f9fa" };
       case "del suc":
-        return {
-          backgroundColor: "#28a745", // 綠色背景
-          color: "#f8f9fa", // 白色文字
-        };
+        return { backgroundColor: "#28a745", color: "#f8f9fa" };
       case "success":
       default:
-        return {
-          backgroundColor: "#28a745", // 綠色背景
-          color: "#f8f9fa", // 白色文字
-        };
+        return { backgroundColor: "#28a745", color: "#f8f9fa" };
     }
   };
 
@@ -113,85 +107,203 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
     }
   };
 
+  return (
+    <Toast
+      show={show}
+      onClose={onClose}
+      className="toast-custom"
+      style={{
+        ...getToastStyle(),
+        borderRadius: "10px",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+        width: "100%",
+        maxWidth: "600px",
+        fontSize: "1rem",
+        whiteSpace: "nowrap",
+        padding: ".5rem",
+      }}
+    >
+      <Toast.Header>
+        <strong
+          className="me-auto"
+          style={{
+            fontWeight: "bold",
+            fontSize: "1.1rem",
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          {getToastHeader()}
+        </strong>
+      </Toast.Header>
+    </Toast>
+  );
+};
+
+// 課程卡片元件
+const CourseCard = ({
+  course,
+  currentUser,
+  onDelete,
+  onEdit,
+  onQuit,
+  onDetail,
+}) => {
+  return (
+    <div className="card">
+      <div className="card-body">
+        {/* 刪除按鈕 */}
+        {currentUser && currentUser.user.role === "Instructor" && (
+          <button
+            className="btn delete-btn"
+            onClick={onDelete}
+            data-id={course._id}
+          >
+            × {/* 使用 × 符號 */}
+          </button>
+        )}
+
+        {/* 課程內容 */}
+        <h5 className="card-title">{course.title}</h5>
+        <p className="card-text">{course.description}</p>
+        <div className="card-info">
+          <p>學生人數: {course.students.length}</p>
+          <p>課程價格: ${course.price}</p>
+        </div>
+        {/* 編輯按鈕 */}
+        {currentUser && currentUser.user.role === "Instructor" && (
+          <button className="btn edit-btn" onClick={() => onEdit(course._id)}>
+            編輯課程
+          </button>
+        )}
+        {/* 編輯按鈕 */}
+        <button className="btn detail-btn" onClick={() => onDetail(course)}>
+          課程詳情
+        </button>
+
+        {/* 退出按鈕 */}
+        {currentUser && currentUser.user.role === "Student" && (
+          <button
+            className="btn delete-btn"
+            onClick={onQuit}
+            data-id={course._id}
+          >
+            ×
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// 主元件
+const CourseComponent = ({ currentUser, setCurrentUser }) => {
+  const Navigate = useNavigate();
+  const [msg, setMsg] = useState("");
+  const [courseData, setCourseData] = useState(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { editMode, editCourse, showToast, messageType } = state;
+
+  //取得課程
+  const fetchCourses = useCallback(() => {
+    if (currentUser) {
+      const _id = currentUser.user._id;
+      const coursePromise =
+        currentUser.user.role === "Instructor"
+          ? CourseService.get(_id) //如果是講師的話
+          : CourseService.getEnrollCourse(_id); //如果是其他身份
+
+      coursePromise
+        .then((res) => {
+          setCourseData(res.data);
+        })
+        .catch((error) => {
+          console.error("獲取課程失敗:", error);
+        });
+    }
+  }, [currentUser]);
+
+  //如果沒有登入 就導向登入畫面
   const HandleTakeToLogin = () => {
     Navigate("/login");
   };
 
-  const HandleToDel = (e) => {
-    let _id = e.target.dataset.id;
-    CourseService.del(_id)
-      .then((res) => {
-        // console.log("课程删除成功:", res);
-        setMessageType("del suc");
-        setShowToast(true);
-        setCourseData((prevCourses) =>
-          prevCourses.filter((course) => course._id !== _id)
-        );
-      })
-      .catch((e) => {
-        console.error("删除失败:", e);
-        setMessageType("error");
-        setShowToast(true);
-      });
+  //講師刪除課程
+  const HandleToDel = async (e) => {
+    const _id = e.target.dataset.id;
+    try {
+      await CourseService.del(_id);
+      dispatch({ type: "SHOW_TOAST", payload: "del suc" });
+      setCourseData((prevCourses) =>
+        prevCourses.filter((course) => course._id !== _id)
+      );
+    } catch (e) {
+      console.error("删除失败:", e);
+      dispatch({ type: "SHOW_TOAST", payload: "error" });
+    }
   };
 
-  const HandleToQuit = (e) => {
-    let _id = e.target.dataset.id;
-    CourseService.quit(_id)
-      .then((res) => {
-        // console.log("退出成功:", res);
-        setCourseData((prevCourses) =>
-          prevCourses.filter((course) => course._id !== _id)
-        );
-        fetchCourses();
-        setMessageType("success");
-        setShowToast(true);
-      })
-      .catch((e) => {
-        console.error("退出失败:", e);
-        setMessageType("error");
-        setShowToast(true);
-      });
+  //學生退出課程
+  const HandleToQuit = async (e) => {
+    const _id = e.target.dataset.id;
+    try {
+      await CourseService.quit(_id);
+      setCourseData((prevCourses) =>
+        prevCourses.filter((course) => course._id !== _id)
+      );
+      fetchCourses();
+      dispatch({ type: "SHOW_TOAST", payload: "success" });
+    } catch (e) {
+      console.error("退出失败:", e);
+      dispatch({ type: "SHOW_TOAST", payload: "error" });
+    }
   };
 
+  //編輯課程觸發紐
   const HandleToEdit = (_id) => {
-    const course = courseData.find((c) => c._id === _id); //找到目標課程的_id
-    // console.log(course);
-
-    setEditCourse(course); //將原本的資料存放進去裡面
-    setEditMode(true);
+    const course = courseData.find((c) => c._id === _id);
+    dispatch({ type: "SET_EDIT_COURSE", payload: course });
+    dispatch({ type: "SET_EDIT_MODE", payload: true });
   };
 
-  const HandleSaveChanges = () => {
-    const { _id, instructor, students, __v, ...courseToUpdate } = editCourse; //从 editCourse 对象中提取出 _id, instructor, students, 和 __v 字段，并将其移除。
-
-    CourseService.update(_id, courseToUpdate)
-      .then((res) => {
-        // console.log("课程更新成功:", res);
-        setCourseData((prevCourses) =>
-          prevCourses.map(
-            (course) =>
-              course._id === _id ? { ...course, ...courseToUpdate } : course //如果找到了该课程，则用更新后的数据，如果沒有則保持原來的數據
-          )
-        );
-        setMessageType("success");
-        setEditMode(false); // 回到主頁面
-      })
-      .catch((e) => {
-        setMsg(e.response.data);
-      });
+  //導向課程詳情頁面
+  const HandleToCourseDetail = (course) => {
+    Navigate(`/course/${course._id}`, { state: { course } });
   };
 
+  //編輯課程資訊
+  const HandleSaveChanges = async () => {
+    const { _id, instructor, students, __v, ...courseToUpdate } = editCourse;
+    try {
+      await CourseService.update(_id, courseToUpdate);
+      setCourseData((prevCourses) =>
+        prevCourses.map((course) =>
+          course._id === _id ? { ...course, ...courseToUpdate } : course
+        )
+      );
+      dispatch({ type: "SHOW_TOAST", payload: "success" });
+      dispatch({ type: "SET_EDIT_MODE", payload: false });
+    } catch (e) {
+      setMsg(e.response?.data?.message || "更新課程時發生錯誤");
+      dispatch({ type: "SHOW_TOAST", payload: "error" });
+    }
+  };
+
+  //取消編輯
   const HandleCancelEdit = () => {
-    setEditMode(false);
-  };
-  const handleCloseToast = () => {
-    setShowToast(false); // 關閉Toast
+    dispatch({ type: "SET_EDIT_MODE", payload: false });
   };
 
+  //觸發成功或失敗的彈出視窗
+  const handleCloseToast = () => {
+    dispatch({ type: "HIDE_TOAST" });
+  };
+
+  //依據課程有沒有變化 渲染畫面
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [fetchCourses]);
 
   return (
     <div
@@ -248,59 +360,15 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
               }}
             >
               {courseData.map((course) => (
-                <div
-                  className="card"
-                  style={{
-                    width: "20rem",
-                    backgroundColor: "#FFF",
-                    border: "1px solid #E3D9C6",
-                    borderRadius: "10px",
-                    paddingBottom: "3rem",
-                  }}
+                <CourseCard
                   key={course._id}
-                >
-                  <div className="card-body" style={{ padding: "1.5rem" }}>
-                    <h5
-                      className="card-title"
-                      style={{
-                        fontSize: "1.5rem",
-                        fontWeight: "bold",
-                        color: "#D89E67",
-                      }}
-                    >
-                      {course.title}
-                    </h5>
-                    <p className="card-text">{course.description}</p>
-                    <p>學生人數: {course.students.length}</p>
-                    <p>課程價格: ${course.price}</p>
-                    {currentUser && currentUser.user.role === "Instructor" && (
-                      <button
-                        className="btn delete-btn"
-                        onClick={HandleToDel}
-                        data-id={course._id}
-                      >
-                        刪除課程
-                      </button>
-                    )}
-                    {currentUser && currentUser.user.role === "Instructor" && (
-                      <button
-                        className="btn edit-btn"
-                        onClick={() => HandleToEdit(course._id)}
-                      >
-                        編輯課程
-                      </button>
-                    )}
-                    {currentUser && currentUser.user.role === "Student" && (
-                      <button
-                        className="btn delete-btn"
-                        onClick={HandleToQuit}
-                        data-id={course._id}
-                      >
-                        退出課程
-                      </button>
-                    )}
-                  </div>
-                </div>
+                  course={course}
+                  currentUser={currentUser}
+                  onDelete={HandleToDel}
+                  onEdit={HandleToEdit}
+                  onQuit={HandleToQuit}
+                  onDetail={HandleToCourseDetail}
+                />
               ))}
             </div>
           )}
@@ -334,38 +402,47 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
             }}
           >
             <div style={{ textAlign: "left" }}>
-              <label style={labelStyle}>課程標題：</label>
+              <label style={styles.label}>課程標題：</label>
               <input
                 type="text"
                 value={editCourse.title}
                 onChange={(e) =>
-                  setEditCourse({ ...editCourse, title: e.target.value })
+                  dispatch({
+                    type: "SET_EDIT_COURSE",
+                    payload: { ...editCourse, title: e.target.value },
+                  })
                 }
-                style={inputStyle}
+                style={styles.input}
                 required
               />
             </div>
             <div style={{ textAlign: "left" }}>
-              <label style={labelStyle}>內容：</label>
+              <label style={styles.label}>內容：</label>
               <textarea
                 value={editCourse.description}
                 onChange={(e) =>
-                  setEditCourse({ ...editCourse, description: e.target.value })
+                  dispatch({
+                    type: "SET_EDIT_COURSE",
+                    payload: { ...editCourse, description: e.target.value },
+                  })
                 }
                 rows="4"
-                style={textareaStyle}
+                style={styles.textarea}
                 required
               />
             </div>
             <div style={{ textAlign: "left" }}>
-              <label style={labelStyle}>價格：</label>
+              <label style={styles.label}>價格：</label>
               <input
                 type="number"
                 value={editCourse.price}
                 onChange={(e) =>
-                  setEditCourse({ ...editCourse, price: e.target.value })
+                  dispatch({
+                    type: "SET_EDIT_COURSE",
+                    payload: { ...editCourse, price: e.target.value },
+                  })
                 }
-                style={inputStyle}
+                style={styles.input}
                 required
               />
             </div>
@@ -376,17 +453,12 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
                 marginTop: "2rem",
               }}
             >
-              <button className="save-btn" type="submit" style={buttonStyle}>
+              <button className="save-btn" type="submit" style={styles.button}>
                 保存更改
               </button>
               <button
                 className="cancel-btn"
                 type="button"
-                style={{
-                  ...buttonStyle,
-                  backgroundColor: "#ccc",
-                  color: "#333",
-                }}
                 onClick={HandleCancelEdit}
               >
                 取消
@@ -395,46 +467,20 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
           </form>
         </div>
       )}
-      {/* Toast Container for center positioning */}
       <ToastContainer
         className="position-fixed p-3"
         style={{
-          top: "50%", // 垂直居中
-          left: "50%", // 水平居中
-          transform: "translate(-50%, -50%)", // 精確居中
-          zIndex: 1050, // 確保顯示在其他元素上方
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 1050,
         }}
       >
-        <Toast
+        <CustomToast
           show={showToast}
           onClose={handleCloseToast}
-          className="toast-custom"
-          style={{
-            ...getToastStyle(),
-            borderRadius: "10px",
-            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
-            width: "100%",
-            maxWidth: "600px",
-            fontSize: "1rem",
-            whiteSpace: "nowrap",
-            padding: ".5rem",
-          }}
-        >
-          <Toast.Header>
-            <strong
-              className="me-auto"
-              style={{
-                fontWeight: "bold",
-                fontSize: "1.1rem",
-                display: "flex",
-                justifyContent: "center",
-                textAlign: "center",
-              }}
-            >
-              {getToastHeader()}
-            </strong>
-          </Toast.Header>
-        </Toast>
+          messageType={messageType}
+        />
       </ToastContainer>
     </div>
   );

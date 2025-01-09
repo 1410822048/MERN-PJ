@@ -1,9 +1,11 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
+import PublicService from "../services/public.service";
 
-const HomeComponent = (currentUser, setCurrentUser) => {
+const HomeComponent = () => {
   const navigate = useNavigate();
+  const [topCourses, setTopCourses] = useState([]);
 
   const handleRegisterRedirect = () => {
     navigate("/register");
@@ -19,61 +21,58 @@ const HomeComponent = (currentUser, setCurrentUser) => {
       navigate("/register", { state: { Inrole: "Instructor" } });
     }
   };
+
+  useEffect(() => {
+    // 使用 PublicService 獲取熱門課程
+    PublicService.getTopCourses()
+      .then((response) => {
+        setTopCourses(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching top courses:", error);
+      });
+  }, []);
+
   return (
-    <main style={{ backgroundColor: "#f4f7fb", minHeight: "100vh" }}>
-      <div
-        className="container py-4"
-        style={{ backgroundColor: "#ffffff", borderRadius: "15px" }}
-      >
-        {/* 使用渐变背景和透明阴影效果 */}
+    <main
+      style={{
+        backgroundColor: "#f8f9fa",
+        minHeight: "100vh",
+        padding: "2rem 0",
+      }}
+    >
+      <div className="container">
+        {/* Hero Section */}
         <div
           className="p-5 mb-4 rounded-3"
           style={{
-            background: "linear-gradient(135deg, #2C1A65, #FFD700)", // 深紫到金色渐变
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+            background: "linear-gradient(135deg, #6a11cb, #2575fc)",
+            color: "#fff",
             borderRadius: "15px",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <div className="container-fluid py-5">
-            <h1 className="display-5 fw-bold text-white">尊貴學習系統</h1>
-            <p className="col-md-8 fs-4 text-white">
+          <div className="container-fluid py-5 text-center">
+            <h1 className="display-4 fw-bold">學逸 - EduEase</h1>
+            <p className="lead col-md-8 mx-auto">
               本系統使用 React.js 作為前端框架，Node.js、MongoDB
               作為後端服務器。這是 MERN 項目的結合，專為高端用戶設計。
             </p>
-            <div className="d-flex flex-column align-items-center">
-              <img
-                src="/images/poster.png" // 确保路径正确
-                alt="學習平台"
-                className="img-fluid mb-4"
-                style={{
-                  maxWidth: "90%",
-                  height: "auto",
-                  borderRadius: "12px",
-                  objectFit: "cover",
-                  maskImage:
-                    "linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))", // 上到下渐变剪影效果
-                  WebkitMaskImage:
-                    "linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))", // 为Webkit浏览器添加兼容
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.4)", // 增加阴影，提升视觉效果
-                }}
-              />
-
+            <div className="d-flex justify-content-center mt-4">
               <button
-                className="btn btn-light btn-lg shadow-lg"
+                className="btn btn-light btn-lg shadow-sm"
                 type="button"
                 style={{
                   borderRadius: "30px",
                   fontWeight: "bold",
                   padding: "10px 30px",
-                  backgroundColor: "#FFD700", // 金色按钮
-                  color: "#2C1A65", // 深紫色文字
+                  backgroundColor: "#fff",
+                  color: "#6a11cb",
                   border: "none",
-                  transition: "transform 0.2s ease", // 平滑过渡
+                  transition: "transform 0.2s ease",
                 }}
-                onMouseEnter={(e) =>
-                  (e.target.style.animation = "shake 0.5s ease infinite")
-                } // 添加震动动画
-                onMouseLeave={(e) => (e.target.style.animation = "")} // 移除动画
+                onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+                onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
               >
                 立即體驗
               </button>
@@ -81,11 +80,94 @@ const HomeComponent = (currentUser, setCurrentUser) => {
           </div>
         </div>
 
-        {/* 用户和讲师部分，使用柔和的色调和精致的卡片效果 */}
-        <div className="row align-items-md-stretch mt-4">
+        {/* 平台特色區塊 */}
+        <div className="row mt-5 g-4">
+          <div className="col-md-4">
+            <div
+              className="h-100 p-4 text-center rounded-3 shadow-sm"
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+              }}
+            >
+              <i className="bi bi-book fs-1 text-primary mb-3"></i>
+              <h3 className="fw-bold">豐富課程</h3>
+              <p>超過 1000 門課程，涵蓋程式設計、設計、商業等多個領域。</p>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div
+              className="h-100 p-4 text-center rounded-3 shadow-sm"
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+              }}
+            >
+              <i className="bi bi-people fs-1 text-success mb-3"></i>
+              <h3 className="fw-bold">專業講師</h3>
+              <p>來自全球的頂尖講師，提供高質量的教學內容。</p>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div
+              className="h-100 p-4 text-center rounded-3 shadow-sm"
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+              }}
+            >
+              <i className="bi bi-laptop fs-1 text-warning mb-3"></i>
+              <h3 className="fw-bold">靈活學習</h3>
+              <p>隨時隨地學習，支持多設備無縫切換。</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 熱門課程區塊 */}
+        <div className="row mt-5">
+          <div className="col-md-12">
+            <h2 className="fw-bold text-center mb-4">熱門課程</h2>
+            <div
+              className="card-container"
+              style={{
+                display: "flex",
+                justifyContent: "space-between", // 讓卡片均勻分佈
+                alignItems: "flex-start", // 讓卡片頂部對齊
+              }}
+            >
+              {topCourses.map((course, index) => (
+                <div
+                  key={course._id}
+                  style={{
+                    flex: 1, // 讓卡片均分空間
+                    margin: "0 10px", // 卡片之間的間距
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: index === 1 ? "center" : "flex-start", // 中間卡片置中
+                  }}
+                >
+                  <div
+                    className="card h-100 shadow-sm"
+                    style={{ borderRadius: "12px", width: "100%" }} // 確保卡片寬度一致
+                  >
+                    <div className="card-body">
+                      <h5 className="card-title fw-bold">{course.title}</h5>
+                      <p className="card-text">
+                        報名人數: {course.studentCount} 人
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 用戶與講師區塊 */}
+        <div className="row align-items-md-stretch mt-5 g-4">
           <div className="col-md-6">
             <div
-              className="h-100 p-5 text-white rounded-3 shadow-lg"
+              className="h-100 p-5 text-white rounded-3 shadow-sm"
               style={{
                 background: "linear-gradient(135deg, #28a745, #218838)",
                 borderRadius: "12px",
@@ -102,6 +184,7 @@ const HomeComponent = (currentUser, setCurrentUser) => {
                 style={{
                   borderRadius: "30px",
                   fontWeight: "bold",
+                  padding: "10px 20px",
                 }}
                 onClick={handleRegisterRedirect}
               >
@@ -111,7 +194,7 @@ const HomeComponent = (currentUser, setCurrentUser) => {
           </div>
           <div className="col-md-6">
             <div
-              className="h-100 p-5 text-white rounded-3 shadow-lg"
+              className="h-100 p-5 text-white rounded-3 shadow-sm"
               style={{
                 background: "linear-gradient(135deg, #007bff, #0056b3)",
                 borderRadius: "12px",
@@ -128,6 +211,7 @@ const HomeComponent = (currentUser, setCurrentUser) => {
                 style={{
                   borderRadius: "30px",
                   fontWeight: "bold",
+                  padding: "10px 20px",
                 }}
                 onClick={handleInstructorRedirect}
               >
@@ -137,16 +221,64 @@ const HomeComponent = (currentUser, setCurrentUser) => {
           </div>
         </div>
 
-        {/* 底部区域，使用深色调背景，增加现代感 */}
+        {/* 平台數據統計區塊 */}
+        <div className="row mt-5">
+          <div className="col-md-12">
+            <div
+              className="p-5 rounded-3"
+              style={{
+                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
+                color: "#fff",
+                borderRadius: "15px",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <h2 className="fw-bold text-center mb-4">平台數據</h2>
+              <div className="row text-center">
+                <div className="col-md-4">
+                  <h3 className="fw-bold">10,000+</h3>
+                  <p>註冊用戶</p>
+                </div>
+                <div className="col-md-4">
+                  <h3 className="fw-bold">500+</h3>
+                  <p>課程數量</p>
+                </div>
+                <div className="col-md-4">
+                  <h3 className="fw-bold">200+</h3>
+                  <p>專業講師</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 用戶見證區塊 */}
+        <div className="row mt-5">
+          <div className="col-md-12">
+            <h2 className="fw-bold text-center mb-4">用戶見證</h2>
+            <div className="row g-4">
+              {[1, 2, 3].map((testimonial) => (
+                <div className="col-md-4" key={testimonial}>
+                  <div
+                    className="p-4 rounded-3 shadow-sm"
+                    style={{ backgroundColor: "#fff", borderRadius: "12px" }}
+                  >
+                    <p>"這個平台意外的有幫助，課程內容非常實用！"</p>
+                    <p className="fw-bold">- 用戶 {testimonial}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
         <footer
-          className="pt-3 mt-4 border-top"
+          className="pt-3 mt-4 text-center"
           style={{
-            background: "linear-gradient(135deg, #2f2f2f, #1a1a1a)",
-            color: "#fff", // 设置字体颜色为白色
-            borderTop: "2px solid #444",
-            textAlign: "center",
+            color: "#6c757d",
+            borderTop: "1px solid #e9ecef",
             padding: "20px",
-            borderRadius: "10px",
           }}
         >
           &copy; 2024 Jacky Zheng
@@ -157,16 +289,3 @@ const HomeComponent = (currentUser, setCurrentUser) => {
 };
 
 export default HomeComponent;
-
-// CSS动画（在<style>标签内或者单独的CSS文件中）
-const style = document.createElement("style");
-style.innerHTML = `
-  @keyframes shake {
-    0% { transform: translate(0, 0); }
-    25% { transform: translate(2px, 2px); }
-    50% { transform: translate(-2px, -2px); }
-    75% { transform: translate(2px, -2px); }
-    100% { transform: translate(0, 0); }
-  }
-`;
-document.head.appendChild(style);

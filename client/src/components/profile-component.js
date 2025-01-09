@@ -44,10 +44,9 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
     }
     if (Object.keys(updatedData).length === 0) {
       toast("没有需要更新的内容！", {
-        // autoClose: 200, // 顯示1.5秒後自動關閉
         className: "toast-custom",
         style: {
-          backgroundColor: "#FF6347", // 可以使用不同的颜色来区分提示信息
+          backgroundColor: "#FF6347",
           color: "#ffffff",
           borderRadius: "15px",
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
@@ -63,7 +62,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
         transition: Slide,
         hideProgressBar: true,
       });
-      return; // 退出函数，不继续执行更新操作
+      return; //
     }
 
     if (Object.keys(updatedData).length > 0) {
@@ -71,12 +70,12 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
         let res = await AuthService.editCurrentUserProfile(_id, updatedData);
 
         if (res.data && res.data.user) {
-          const updatedUser = res.data.user; // 后端返回的更新数据
+          const updatedUser = res.data.user; // 後端返回的更新數據
 
-          // 更新状态
+          // 更新狀態
           setCurrentUser((prev) => ({
             ...prev,
-            user: { ...updatedUser }, // 确保更新为新的用户数据
+            user: { ...updatedUser }, // 确保更新為新的用户数据
           }));
 
           // 更新 localStorage，保留 token
@@ -92,7 +91,6 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
             JSON.parse(localStorage.getItem("user"))
           );
 
-          // 关闭编辑模式
           setIsEditing(false);
 
           toast("更新成功", {
@@ -347,7 +345,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                   </tr>
                   <tr>
                     <td>
-                      <strong>电子邮件：</strong>
+                      <strong>電子信箱：</strong>
                     </td>
                     <td>{currentUser?.user?.email}</td>
                   </tr>
