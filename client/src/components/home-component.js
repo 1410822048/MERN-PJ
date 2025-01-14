@@ -148,6 +148,7 @@ const HomeComponent = () => {
               className="card-container"
               style={{
                 display: "flex",
+                flexWrap: "wrap", // 讓卡片在窄屏下換行
                 justifyContent: "space-between", // 讓卡片均勻分佈
                 alignItems: "flex-start", // 讓卡片頂部對齊
               }}
@@ -155,19 +156,24 @@ const HomeComponent = () => {
               {topCourses.map((course, index) => (
                 <div
                   key={course._id}
+                  className="col-12 col-sm-6 col-md-4 col-lg-3"
                   style={{
-                    flex: 1, // 讓卡片均分空間
-                    margin: "0 10px", // 卡片之間的間距
+                    margin: "10px 0", // 卡片之間的上下間距
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: index === 1 ? "center" : "flex-start", // 中間卡片置中
+                    alignItems: "center", // 所有卡片置中
+                    justifyContent: "space-between", // 保證卡片內容上下對齊
                   }}
                 >
                   <div
                     className="card h-100 shadow-sm"
-                    style={{ borderRadius: "12px", width: "100%" }} // 確保卡片寬度一致
+                    style={{
+                      borderRadius: "12px",
+                      width: "100% !important",
+                      height: "300px !important", // 固定卡片高度，確保每張卡片一樣大
+                    }}
                   >
-                    <div className="card-body">
+                    <div className="card-body d-flex flex-column justify-content-between">
                       <h5 className="card-title fw-bold">{course.title}</h5>
                       <p className="card-text">
                         報名人數: {course.studentCount} 人
