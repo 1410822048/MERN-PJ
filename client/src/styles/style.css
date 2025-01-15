@@ -191,3 +191,152 @@
   background-color: #6d6d6c;
   border-color: #f6c89f;
 }
+
+/* 基本樣式 */
+.course-detail-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.main-content {
+  flex: 3;
+}
+
+.sidebar {
+  flex: 1;
+}
+
+.course-header,
+.course-section,
+.course-info,
+.contact-info,
+.social-links {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.course-header h1 {
+  color: #d89e67;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.course-header p {
+  font-size: 1.2rem;
+  color: #4a4a4a;
+  line-height: 1.6;
+}
+
+.course-section h2,
+.course-info h3,
+.contact-info h3,
+.social-links h3 {
+  color: #d89e67;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.course-section ul,
+.social-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.course-section li,
+.social-links li {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.course-section p,
+.course-info p,
+.contact-info p {
+  color: #4a4a4a;
+  margin-bottom: 1rem;
+}
+
+.course-section strong {
+  color: #4a4a4a;
+}
+
+.course-info button {
+  background: linear-gradient(135deg, #f6c89f, #d89e67);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.course-info button:hover {
+  background: linear-gradient(135deg, #d89e67, #f6c89f);
+}
+
+.social-links a {
+  color: #4a4a4a;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .course-detail-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .main-content,
+  .sidebar {
+    flex: 1;
+  }
+
+  .course-header,
+  .course-section,
+  .course-info,
+  .contact-info,
+  .social-links {
+    padding: 1rem;
+  }
+
+  .course-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .course-header p {
+    font-size: 1rem;
+  }
+
+  .course-section h2,
+  .course-info h3,
+  .contact-info h3,
+  .social-links h3 {
+    font-size: 1.2rem;
+  }
+
+  .course-section p,
+  .course-info p,
+  .contact-info p {
+    font-size: 0.9rem;
+  }
+
+  .course-info button {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}

@@ -8,7 +8,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
   const [username, setUsername] = useState(""); // 用户名
   const [password, setPassword] = useState(""); // 密码
 
-  let [usernameerror, setUserNameError] = useState(""); // 狀態：電子信箱錯誤訊息
+  let [usernameerror, setUserNameError] = useState(""); // 狀態：用戶名錯誤訊息
   let [passwordError, setPasswordError] = useState(""); // 狀態：密碼錯誤訊息
 
   useEffect(() => {
@@ -26,9 +26,9 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
   };
 
   const HandleProfileEdit = async () => {
-    //更新資料的OnClick event
+    // 更新資料的 OnClick event
     if (!currentUser || !currentUser.user) {
-      console.error("currentUser is not defined"); //確認是否都有currentUser
+      console.error("currentUser is not defined"); // 確認是否都有 currentUser
       return;
     }
 
@@ -62,7 +62,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
         transition: Slide,
         hideProgressBar: true,
       });
-      return; //
+      return;
     }
 
     if (Object.keys(updatedData).length > 0) {
@@ -125,7 +125,14 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
 
   return (
     <main
-      style={{ backgroundColor: "#f4f7fb", minHeight: "90vh", padding: "80px" }}
+      style={{
+        backgroundColor: "#f4f7fb",
+        minHeight: "90vh",
+        padding: "20px",
+        "@media (min-width: 768px)": {
+          padding: "80px",
+        },
+      }}
     >
       {!currentUser && (
         <div
@@ -140,40 +147,46 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
       )}
       {currentUser && (
         <div
-          className="container py-4"
           style={{
             backgroundColor: "#2C1A65",
             borderRadius: "20px",
             maxWidth: "800px",
             boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
             padding: "1rem",
+            margin: "0 auto",
             marginTop: "30px",
           }}
         >
           {/* 第一层: 个人档案标题 */}
           <div
-            className="text-center mb-4"
             style={{
               backgroundColor: "#2C1A65",
               color: "#ffffff",
               padding: "1.5rem",
+              textAlign: "center",
             }}
           >
-            <h2 className="fw-bold" style={{ fontSize: "2rem" }}>
-              個人檔案
-            </h2>
+            <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>個人檔案</h2>
           </div>
 
           {/* 第二层: 用户信息展示 */}
           <div
-            className="d-flex align-items-center mb-4"
             style={{
               backgroundColor: "#f9f9f9",
               padding: "1.5rem",
               borderRadius: "15px",
               boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+              display: "flex",
+              flexDirection: "column", // 預設為垂直排列（手機端）
+              alignItems: "center", // 內容置中
+              gap: "1rem", // 元素間距
+              "@media (min-width: 768px)": {
+                flexDirection: "row", // 桌面端改為水平排列
+                alignItems: "center", // 內容垂直置中
+              },
             }}
           >
+            {/* 頭像區域 */}
             <div
               style={{
                 width: "90px",
@@ -182,8 +195,8 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginRight: "30px",
                 border: "4px solid #2C1A65",
+                flexShrink: 0, // 防止頭像被壓縮
               }}
             >
               <img
@@ -198,26 +211,39 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
               />
             </div>
 
+            {/* 用戶名和按鈕區域 */}
             <div
-              className="d-flex justify-content-between align-items-center w-100"
-              style={{ flex: 1 }}
+              style={{
+                display: "flex",
+                flexDirection: "column", // 預設為垂直排列（手機端）
+                alignItems: "center", // 內容置中
+                gap: "1rem", // 元素間距
+                flex: 1, // 佔滿剩餘空間
+                "@media (min-width: 768px)": {
+                  flexDirection: "row", // 桌面端改為水平排列
+                  justifyContent: "space-between", // 用戶名和按鈕分開
+                  alignItems: "center", // 內容垂直置中
+                },
+              }}
             >
+              {/* 用戶名 */}
               <div>
                 <strong
                   style={{
                     fontSize: "1.3rem",
                     fontWeight: "bold",
                     textAlign: "center",
+                    color: "#2C1A65", // 用戶名顏色
                   }}
                 >
                   {currentUser?.user?.username}
                 </strong>
               </div>
 
+              {/* 編輯資料按鈕 */}
               <div>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="btn btn-primary"
                   style={{
                     backgroundColor: "#FFD700",
                     color: "#2C1A65",
@@ -225,6 +251,12 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                     fontWeight: "bold",
                     padding: "10px 30px",
                     textAlign: "center",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease", // 添加過渡效果
+                    ":hover": {
+                      backgroundColor: "#E6C200", // 滑鼠懸停時變色
+                    },
                   }}
                 >
                   编辑资料
@@ -238,23 +270,43 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
             <div
               style={{
                 backgroundColor: "#ffffff",
-                padding: "1.5rem",
+                padding: "2rem",
                 borderRadius: "15px",
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                marginTop: "1.5rem",
               }}
             >
               <form>
-                <div className="mb-3" style={{ position: "relative" }}>
-                  <label htmlFor="username" className="form-label">
+                {/* 用户名输入框 */}
+                <div style={{ marginBottom: "1.5rem", position: "relative" }}>
+                  <label
+                    htmlFor="username"
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      marginBottom: "0.5rem",
+                      display: "block",
+                      fontWeight: "500",
+                    }}
+                  >
                     用户名：
                   </label>
                   <input
                     type="text"
                     id="username"
-                    className="form-control"
                     value={username}
-                    onKeyDown={handleKeyDown} // 新增事件監聽
+                    onKeyDown={handleKeyDown}
                     onChange={(e) => setUsername(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #ddd",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      outline: "none",
+                      transition: "all 0.2s ease",
+                      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.05)",
+                    }}
                   />
                   {usernameerror && (
                     <span
@@ -274,17 +326,37 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                     </span>
                   )}
                 </div>
-                <div className="mb-3" style={{ position: "relative" }}>
-                  <label htmlFor="password" className="form-label">
+
+                {/* 密码输入框 */}
+                <div style={{ marginBottom: "1.5rem", position: "relative" }}>
+                  <label
+                    htmlFor="password"
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      marginBottom: "0.5rem",
+                      display: "block",
+                      fontWeight: "500",
+                    }}
+                  >
                     密码：
                   </label>
                   <input
                     type="password"
                     id="password"
-                    className="form-control"
                     value={password}
-                    onKeyDown={handleKeyDown} // 新增事件監聽
+                    onKeyDown={handleKeyDown}
                     onChange={(e) => setPassword(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #ddd",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      outline: "none",
+                      transition: "all 0.2s ease",
+                      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.05)",
+                    }}
                   />
                   {passwordError && (
                     <span
@@ -304,59 +376,92 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                     </span>
                   )}
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={HandleProfileEdit}
+
+                {/* 按钮区域 */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    gap: "1rem",
+                    marginTop: "1.5rem",
+                  }}
                 >
-                  保存更改
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary ms-3"
-                  onClick={() => setIsEditing(false)}
-                >
-                  取消
-                </button>
+                  <button
+                    type="button"
+                    onClick={HandleProfileEdit}
+                    style={{
+                      backgroundColor: "#28a745",
+                      color: "#ffffff",
+                      padding: "10px 20px",
+                      borderRadius: "5px",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "1rem",
+                      fontWeight: "500",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.backgroundColor = "#218838";
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = "#28a745";
+                    }}
+                  >
+                    保存更改
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    style={{
+                      backgroundColor: "#6c757d",
+                      color: "#ffffff",
+                      padding: "10px 20px",
+                      borderRadius: "5px",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "1rem",
+                      fontWeight: "500",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.backgroundColor = "#5a6268";
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = "#6c757d";
+                    }}
+                  >
+                    取消
+                  </button>
+                </div>
               </form>
             </div>
           ) : (
+            // 非編輯模式的顯示內容
             <div
               style={{
                 backgroundColor: "#ffffff",
-                padding: "1.5rem",
+                padding: "2rem",
                 borderRadius: "15px",
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                marginTop: "1.5rem",
               }}
             >
-              <table className="table table-borderless text-muted">
-                <tbody>
-                  <tr>
-                    <td style={{ width: "120px" }}>
-                      <strong>姓名：</strong>
-                    </td>
-                    <td>{currentUser?.user?.username}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>用户ID：</strong>
-                    </td>
-                    <td>{currentUser?.user?._id}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>電子信箱：</strong>
-                    </td>
-                    <td>{currentUser?.user?.email}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>身份：</strong>
-                    </td>
-                    <td>{currentUser?.user?.role}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "120px 1fr",
+                  gap: "1rem",
+                }}
+              >
+                <div style={{ fontWeight: "bold", color: "#555" }}>姓名：</div>
+                <div>{currentUser?.user?.username}</div>
+                <div style={{ fontWeight: "bold", color: "#555" }}>用户ID：</div>
+                <div>{currentUser?.user?._id}</div>
+                <div style={{ fontWeight: "bold", color: "#555" }}>電子信箱：</div>
+                <div>{currentUser?.user?.email}</div>
+                <div style={{ fontWeight: "bold", color: "#555" }}>身份：</div>
+                <div>{currentUser?.user?.role}</div>
+              </div>
             </div>
           )}
         </div>
@@ -364,15 +469,14 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
       {/* Toast Container for center positioning */}
       <ToastContainer
         autoClose={1000}
-        className="position-fixed p-3"
         position="top-center"
         style={{
-          top: "50%", // 垂直居中
-          left: "50%", // 水平居中
-          transform: "translate(-50%, -50%)", // 精確居中
-          zIndex: 1050, // 確保顯示在其他元素上方
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 1050,
         }}
-        transition={Slide} // Apply slide transition
+        transition={Slide}
       />
     </main>
   );

@@ -1,47 +1,47 @@
 import React, { useState } from "react";
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
-import { Toast, ToastContainer } from "react-bootstrap"; // 引入Toast和ToastContainer
-import "../styles/style.css";
+import { Toast, ToastContainer } from "react-bootstrap";
 
 const LoginComponent = ({ currentUser, setCurrentUser }) => {
   const Navigate = useNavigate();
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-  let [emailError, setEmailError] = useState(""); // 狀態：電子信箱錯誤訊息
-  let [passwordError, setPasswordError] = useState(""); // 狀態：密碼錯誤訊息
-  let [showToast, setShowToast] = useState(false); // 控制Toast顯示
+  let [emailError, setEmailError] = useState("");
+  let [passwordError, setPasswordError] = useState("");
+  let [showToast, setShowToast] = useState(false);
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
   const HandleLogin = async function () {
-    setEmailError(""); // 清除先前的錯誤訊息
-    setPasswordError(""); // 清除先前的錯誤訊息
+    setEmailError("");
+    setPasswordError("");
     try {
       let response = await AuthService.login(email, password);
       localStorage.setItem("user", JSON.stringify(response.data));
       setShowToast(true);
     } catch (e) {
       if (e.response.data.error.includes("信箱")) {
-        setEmailError(e.response.data.error); // 設定電子信箱錯誤訊息
+        setEmailError(e.response.data.error);
       }
       if (e.response.data.error.includes("密碼")) {
-        setPasswordError(e.response.data.error); // 設定密碼錯誤訊息
+        setPasswordError(e.response.data.error);
       }
     }
   };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      HandleLogin(); // 當按下 Enter 時執行 HandleLogin
-      e.preventDefault(); // 阻止預設表單提交
+      HandleLogin();
+      e.preventDefault();
     }
   };
 
   const handleCloseToast = () => {
-    setShowToast(false); // 關閉Toast
+    setShowToast(false);
     setCurrentUser(AuthService.getCurrentUser());
-    Navigate("/profile"); // 跳轉到登入頁面
+    Navigate("/profile");
   };
 
   return (
@@ -69,6 +69,10 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
           border: "1px solid #e0e0e0",
           gap: "1rem",
           padding: "1rem",
+          "@media (max-width: 768px)": {
+            flexDirection: "column",
+            padding: "1rem",
+          },
         }}
       >
         {/* 左側插圖區域 */}
@@ -82,6 +86,10 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
             color: "#333",
             padding: "2rem",
             borderRadius: "16px",
+            "@media (max-width: 768px)": {
+              width: "100%",
+              borderRadius: "16px 16px 0 0",
+            },
           }}
         >
           <div style={{ textAlign: "center" }}>
@@ -107,6 +115,9 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
                 marginTop: "1rem",
                 borderRadius: "12px",
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                "@media (max-width: 768px)": {
+                  maxWidth: "80%",
+                },
               }}
             />
           </div>
@@ -119,6 +130,11 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
             padding: "2rem 3rem",
             borderRadius: "16px",
             border: "1px solid #ddd",
+            "@media (max-width: 768px)": {
+              width: "100%",
+              padding: "1.5rem",
+              borderRadius: "0 0 16px 16px",
+            },
           }}
         >
           <h2
@@ -133,7 +149,16 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
             登入系統
           </h2>
           <div style={{ marginBottom: "1.5rem" }}>
-            <label htmlFor="email" style={labelStyle}>
+            <label
+              htmlFor="email"
+              style={{
+                fontSize: "1rem",
+                color: "#555",
+                marginBottom: "0.5rem",
+                display: "block",
+                fontWeight: "500",
+              }}
+            >
               電子信箱：
             </label>
             <div style={{ position: "relative" }}>
@@ -143,8 +168,17 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
                 name="email"
                 value={email}
                 onChange={handleEmailChange}
-                onKeyDown={handleKeyDown} // 新增事件監聽
-                style={inputStyle}
+                onKeyDown={handleKeyDown}
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  fontSize: "1rem",
+                  outline: "none",
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.05)",
+                }}
               />
               {emailError && (
                 <span
@@ -166,7 +200,16 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
           <div style={{ marginBottom: "1.5rem" }}>
-            <label htmlFor="password" style={labelStyle}>
+            <label
+              htmlFor="password"
+              style={{
+                fontSize: "1rem",
+                color: "#555",
+                marginBottom: "0.5rem",
+                display: "block",
+                fontWeight: "500",
+              }}
+            >
               密碼：
             </label>
             <div style={{ position: "relative" }}>
@@ -176,8 +219,17 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
                 name="password"
                 value={password}
                 onChange={handlePasswordChange}
-                onKeyDown={handleKeyDown} // 新增事件監聽
-                style={inputStyle}
+                onKeyDown={handleKeyDown}
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  fontSize: "1rem",
+                  outline: "none",
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.05)",
+                }}
               />
               {passwordError && (
                 <span
@@ -225,30 +277,29 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
           >
             登入系統
           </button>
-          {/* Toast Container for center positioning */}
           <ToastContainer
             className="position-fixed p-3"
             style={{
-              top: "50%", // 垂直居中
-              left: "50%", // 水平居中
-              transform: "translate(-50%, -50%)", // 精確居中
-              zIndex: 1050, // 確保顯示在其他元素上方
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 1050,
             }}
           >
             <Toast
               show={showToast}
               onClose={handleCloseToast}
-              className="toast-custom" // 在這裡添加自定義動畫
+              className="toast-custom"
               style={{
-                backgroundColor: "#6c757d", // 鮮明的橙色背景
-                color: "#f8f9fa", // 白色文字
-                borderRadius: "10px", // 圓角邊框
-                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)", // 添加陰影
-                width: "100%", // 調整寬度
-                maxWidth: "600px", // 最大寬度
-                fontSize: "1rem", // 增加字體大小
-                whiteSpace: "nowrap", // 允許文字換行
-                padding: ".5rem", // 增加內邊距
+                backgroundColor: "#6c757d",
+                color: "#f8f9fa",
+                borderRadius: "10px",
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+                width: "100%",
+                maxWidth: "600px",
+                fontSize: "1rem",
+                whiteSpace: "nowrap",
+                padding: "0.5rem",
               }}
             >
               <Toast.Header>
@@ -267,7 +318,7 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
               </Toast.Header>
               <Toast.Body
                 style={{
-                  fontSize: ".9rem",
+                  fontSize: "0.9rem",
                   display: "flex",
                   justifyContent: "center",
                   textAlign: "center",
@@ -277,7 +328,6 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
               </Toast.Body>
             </Toast>
           </ToastContainer>
-          <div />
           <p
             style={{
               marginTop: "1.5rem",
@@ -287,7 +337,15 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
             }}
           >
             還沒有帳號？{" "}
-            <a href="/register" style={linkStyle}>
+            <a
+              href="/register"
+              style={{
+                color: "#bf84aa",
+                textDecoration: "none",
+                fontWeight: "500",
+                transition: "color 0.2s ease",
+              }}
+            >
               註冊會員
             </a>
           </p>
@@ -295,32 +353,6 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
       </div>
     </div>
   );
-};
-
-const labelStyle = {
-  fontSize: "1rem",
-  color: "#555",
-  marginBottom: "0.5rem",
-  display: "block",
-  fontWeight: "500",
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "0.75rem",
-  border: "1px solid #ddd",
-  borderRadius: "8px",
-  fontSize: "1rem",
-  outline: "none",
-  transition: "all 0.2s ease",
-  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.05)",
-};
-
-const linkStyle = {
-  color: "#bf84aa",
-  textDecoration: "none",
-  fontWeight: "500",
-  transition: "color 0.2s ease",
 };
 
 export default LoginComponent;
